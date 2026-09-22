@@ -1,4 +1,4 @@
-# The phenomenon
+## Hong Kong Weather Rhythm: Rainfall and Temperature in 2025
 
 <!-- This is the SD5913 assignment 2 template. Everything in this file is yours to
 replace, and the check counts words: comments like this one are not words, so
@@ -9,7 +9,7 @@ Then, in this order, at least 150 words in total.
 New to folders, paths, or the files here whose names start with a dot? Read
 https://github.com/sd5913/pfad/blob/2026/reference/files.md first. Ten minutes. -->
 
-![what the picture is](out/plot.png)
+![Hong Kong weekly rainfall and temperature in 2025](out/weather-rhythm-2025.png)
 
 ## The phenomenon
 
