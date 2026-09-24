@@ -124,7 +124,15 @@ print("Weekly temperature:", weekly_temperature)
 
 
 
-fig, ax = plt.subplots(figsize=(10, 6))
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Reserve space on the right for rainfall legend
+fig.subplots_adjust(
+    left=0.05,
+    right=0.78,
+    top=0.82,
+    bottom=0.24
+)
 
 WEEKS = len(weekly_rainfall)
 
@@ -213,7 +221,7 @@ ax.set_xticklabels(
 ax.set_xlabel(
     "Week of 2025",
     fontsize=12,
-    labelpad=15
+    labelpad=12
 )
 
 ax.set_yticks([])
@@ -223,8 +231,110 @@ for spine in ax.spines.values():
 
 ax.tick_params(axis="x", length=0)
 
+# Month axis with a thin grey arrow
 
+axis_color = "#B0B0B0"
+axis_width = 0.8
 
+ax.annotate(
+    "",
+    xy=(1.01, -0.00),
+    xytext=(0, -0.00),
+    xycoords="axes fraction",
+    textcoords="axes fraction",
+    arrowprops=dict(
+        arrowstyle="->",
+        color=axis_color,
+        lw=axis_width,
+        mutation_scale=10
+    ),
+    annotation_clip=False
+)
+
+# Move month labels closer to the arrow
+ax.tick_params(
+    axis="x",
+    length=0,
+    pad=10
+)
+
+# Rainfall legend: one example bar
+
+example_rain = 100
+
+# Use the same length formula as the main chart
+example_length = 0.5 + np.sqrt(example_rain) * 0.2
+
+# Vertical divider between main chart and rainfall legend
+
+fig.add_artist(
+    plt.Line2D(
+        [0.795, 0.795],
+        [0.29, 0.72],
+        transform=fig.transFigure,
+        color=axis_color,
+        linewidth=axis_width
+    )
+)
+
+# Create a separate legend area on the right
+rain_ax = fig.add_axes([0.81, 0.34, 0.17, 0.32])
+
+rain_ax.set_xlim(0, 1)
+rain_ax.set_ylim(-example_length * 0.8, example_length * 0.8)
+
+# Draw the example bar
+rain_ax.plot(
+    [0.20, 0.20],
+    [-example_length / 2, example_length / 2],
+    color="#C43D3D",
+    linewidth=10,
+    solid_capstyle="round"
+)
+
+# Draw a thin measurement line
+rain_ax.plot(
+    [0.40, 0.40],
+    [-example_length / 2, example_length / 2],
+    color="#555555",
+    linewidth=0.8
+)
+
+# Draw the top and bottom measurement marks
+for y in [-example_length / 2, example_length / 2]:
+
+    rain_ax.plot(
+        [0.35, 0.45],
+        [y, y],
+        color="#555555",
+        linewidth=0.8
+    )
+
+# Add rainfall amount
+rain_ax.text(
+    0.50,
+    0,
+    f"{example_rain} mm",
+    fontsize=11,
+    va="center",
+    ha="left"
+)
+
+# Add legend title
+rain_ax.set_title(
+    "Weekly Total\nRainfall",
+    fontsize=10,
+    pad=10
+)
+
+# Hide axes
+rain_ax.set_xticks([])
+rain_ax.set_yticks([])
+
+for spine in rain_ax.spines.values():
+    spine.set_visible(False)
+
+# Temperature legend
 
 sm = ScalarMappable(
     norm=temp_norm,
@@ -232,17 +342,15 @@ sm = ScalarMappable(
 )
 
 
-legend_ax = ax.inset_axes(
-    [0.73, 0.06, 0.24, 0.025]
+legend_ax = fig.add_axes(
+    [0.65, 0.055, 0.25, 0.018]
 )
-
 
 colorbar = fig.colorbar(
     sm,
     cax=legend_ax,
     orientation="horizontal"
 )
-
 
 colorbar.set_ticks([
     min_temp,
@@ -254,13 +362,11 @@ colorbar.set_ticklabels([
     f"{max_temp:.1f}°C"
 ])
 
-
 colorbar.ax.set_title(
     "Weekly Mean Temperature",
     fontsize=9,
     pad=8
 )
-
 
 colorbar.ax.tick_params(
     labelsize=8,
@@ -277,7 +383,6 @@ ax.set_title(
     pad=30
 )
 
-fig.tight_layout()
 
 OUT.mkdir(exist_ok=True)
 
